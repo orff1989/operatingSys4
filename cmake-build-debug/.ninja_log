@@ -1,0 +1,6 @@
+# ninja log v5
+0	78	1650445776591694266	CMakeFiles/operatingSys4.dir/main.cpp.o	7f11267540a69b3a
+1	107	1650445776591694266	CMakeFiles/operatingSys4.dir/stack.cpp.o	28ed98c8ea224b2e
+0	124	1650462904007479227	CMakeFiles/operatingSys4.dir/main.cpp.o	7f11267540a69b3a
+1	150	1650462904043479742	CMakeFiles/operatingSys4.dir/server.cpp.o	8117333cb59d54cc
+1	157	1650462904071480142	CMakeFiles/operatingSys4.dir/stack.cpp.o	28ed98c8ea224b2e

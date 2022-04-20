@@ -20,7 +20,7 @@ void push(Stack* st, char* str){
     Node* n = (Node*) malloc(sizeof(Node));
     if(!n) return;
 
-    n->value= (char*) malloc(sizeof(char)*strlen(str)+6);
+    n->value= (char*) calloc(sizeof(char),strlen(str)+1);
     if(!n->value) return;
 
     strcpy(n->value,str);
