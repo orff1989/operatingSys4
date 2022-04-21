@@ -125,7 +125,7 @@ void remove_first_n_chars(char* str, int n){
 
 void * sendMSG(void *arg)
 {
-    int newSocket = *((int *)arg);
+    int newSoc = *((int *)arg);
     char txt[1024];
     char buf[1024];
 
@@ -133,7 +133,8 @@ void * sendMSG(void *arg)
         strcpy(txt, "");
         strcpy(buf, "");
 
-        recv(newSocket, txt, 1024, 0);
+        if(recv(newSoc, txt, 1024, 0)<0)
+            perror("server: recv");
 
         if (strncmp(txt, "PUSH ", 5) == 0) {
             remove_first_n_chars(txt, 5);
@@ -147,15 +148,15 @@ void * sendMSG(void *arg)
                 strcat(buf, "\n");
                 free(s);
             }
-        } else if (strncmp(txt, "EXIT", 4) == 0) break;
+        }
         else if (strncmp(txt, "prints", 6) == 0) printStack(st);
 
-        if (send(newSocket, buf, strlen(buf) + 1, 0) == -1)
+        if (send(newSoc, buf, strlen(buf) + 1, 0) == -1)
             perror("send");
 
     }
     freeStack(st);
-    close(newSocket);
+    close(newSoc);
     pthread_exit(NULL);
 }
 
