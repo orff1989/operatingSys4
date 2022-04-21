@@ -21,7 +21,7 @@ void *get_in_addr(struct sockaddr *sa)
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-void cientThread()
+void cient()
 {
     int sockfd;
     char txt[MAXDATASIZE];
@@ -68,7 +68,6 @@ void cientThread()
 
 }
 int main(){
-    cientThread();
-
+    cient();
     return 0;
 }
