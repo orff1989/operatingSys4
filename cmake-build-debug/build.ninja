@@ -49,8 +49,8 @@ cmake_ninja_workdir = /home/or/CLionProjects/operatingSys4/cmake-build-debug/
 
 build cmake_object_order_depends_target_operatingSys4: phony || CMakeFiles/operatingSys4.dir
 
-build CMakeFiles/operatingSys4.dir/main.cpp.o: CXX_COMPILER__operatingSys4_Debug /home/or/CLionProjects/operatingSys4/main.cpp || cmake_object_order_depends_target_operatingSys4
-  DEP_FILE = CMakeFiles/operatingSys4.dir/main.cpp.o.d
+build CMakeFiles/operatingSys4.dir/client.cpp.o: CXX_COMPILER__operatingSys4_Debug /home/or/CLionProjects/operatingSys4/client.cpp || cmake_object_order_depends_target_operatingSys4
+  DEP_FILE = CMakeFiles/operatingSys4.dir/client.cpp.o.d
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/operatingSys4.dir
   OBJECT_FILE_DIR = CMakeFiles/operatingSys4.dir
@@ -65,14 +65,6 @@ build CMakeFiles/operatingSys4.dir/server.cpp.o: CXX_COMPILER__operatingSys4_Deb
   TARGET_COMPILE_PDB = CMakeFiles/operatingSys4.dir/
   TARGET_PDB = operatingSys4.pdb
 
-build CMakeFiles/operatingSys4.dir/stack.cpp.o: CXX_COMPILER__operatingSys4_Debug /home/or/CLionProjects/operatingSys4/stack.cpp || cmake_object_order_depends_target_operatingSys4
-  DEP_FILE = CMakeFiles/operatingSys4.dir/stack.cpp.o.d
-  FLAGS = -g
-  OBJECT_DIR = CMakeFiles/operatingSys4.dir
-  OBJECT_FILE_DIR = CMakeFiles/operatingSys4.dir
-  TARGET_COMPILE_PDB = CMakeFiles/operatingSys4.dir/
-  TARGET_PDB = operatingSys4.pdb
-
 
 # =============================================================================
 # Link build statements for EXECUTABLE target operatingSys4
@@ -81,7 +73,7 @@ build CMakeFiles/operatingSys4.dir/stack.cpp.o: CXX_COMPILER__operatingSys4_Debu
 #############################################
 # Link the executable operatingSys4
 
-build operatingSys4: CXX_EXECUTABLE_LINKER__operatingSys4_Debug CMakeFiles/operatingSys4.dir/main.cpp.o CMakeFiles/operatingSys4.dir/server.cpp.o CMakeFiles/operatingSys4.dir/stack.cpp.o
+build operatingSys4: CXX_EXECUTABLE_LINKER__operatingSys4_Debug CMakeFiles/operatingSys4.dir/client.cpp.o CMakeFiles/operatingSys4.dir/server.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/operatingSys4.dir
   POST_BUILD = :

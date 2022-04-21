@@ -1,59 +1,70 @@
 #include <stdio.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <string.h>
-#include <arpa/inet.h>
 #include <stdlib.h>
-#include <fcntl.h> // for open
-#include <unistd.h> // for close
-#include<pthread.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
+#include <netdb.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
+
+#define MAXDATASIZE 1024 // max number of bytes we can get at once
+
+// get sockaddr, IPv4 or IPv6:
+void *get_in_addr(struct sockaddr *sa)
+{
+    if (sa->sa_family == AF_INET) {
+        return &(((struct sockaddr_in*)sa)->sin_addr);
+    }
+    return &(((struct sockaddr_in6*)sa)->sin6_addr);
+}
 
 void cientThread()
 {
-    char message[1000];
-    char buffer[1024];
-    int clientSocket;
-    struct sockaddr_in serverAddr;
-    socklen_t addr_size;
+    int sockfd;
+    char txt[MAXDATASIZE];
+    char buff[MAXDATASIZE];
+    struct sockaddr_in server_addr;
+    socklen_t addr_len;
 
-    // Create the socket.
-    clientSocket = socket(PF_INET, SOCK_STREAM, 0);
 
-    //Configure settings of the server address
-    // Address family is Internet
-    serverAddr.sin_family = AF_INET;
-
-    //Set port number, using htons function
-    serverAddr.sin_port = htons(3490);
-
-    //Set IP address to localhost
-    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
-
-    //Connect the socket to the server using the address
-    addr_size = sizeof serverAddr;
-    if (connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size)==-1){
-        close(clientSocket);
-        perror(" failed to connect");
+    if((sockfd = socket(PF_INET, SOCK_STREAM, 0))==-1){
+        perror("client: socket");
         return;
     }
-    while(1) {
-        strcpy(message,"");
-        fgets(message, sizeof(message), stdin);
-        if(message[strlen(message)-1]=='\n') message[strlen(message)-1]='\0';
 
-        if (send(clientSocket, message, strlen(message), 0) < 0) {
-            printf("Send failed\n");
-        }
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(3490);
+    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-        //Read the message from the server into the buffer
-        if (recv(clientSocket, buffer, 1024, 0) < 0) {
-            printf("Receive failed\n");
-        }
-        //Print the received message
-        printf("Data received: %s\n", buffer);
+    memset(server_addr.sin_zero, '\0', sizeof server_addr.sin_zero);
+
+    addr_len = sizeof server_addr;
+    if (connect(sockfd, (struct sockaddr *) &server_addr, addr_len) == -1){
+        close(sockfd);
+        perror("client: connect");
+        return;
     }
-    close(clientSocket);
+
+    while(1) {
+        strcpy(txt,"");
+        fgets(txt, sizeof(txt), stdin);
+        if(txt[strlen(txt)-1]=='\n') txt[strlen(txt)-1]='\0';
+
+        if (send(sockfd, txt, strlen(txt), 0) < 0) {
+            printf("fail in sending\n");
+        }
+
+
+        if (recv(sockfd, buff, MAXDATASIZE, 0) < 0) {
+            printf("fail in recv\n");
+        }
+
+        printf("%s",buff);
+    }
+    close(sockfd);
 
 }
 int main(){

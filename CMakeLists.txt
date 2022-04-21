@@ -4,6 +4,5 @@ project(operatingSys4)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(operatingSys4
-        main.cpp
-        server.cpp
-        stack.cpp)
+        client.cpp
+        server.cpp)

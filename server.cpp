@@ -12,6 +12,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 
+
 // got some help from: https://dzone.com/articles/parallel-tcpip-socket-server-with-multi-threading
 
 #define PORT "3490"  // the port users will be connecting to
@@ -88,16 +89,19 @@ void pop(Stack* st){
 
 char* top(Stack* st){
     char* str;
+    str=(char*) calloc(sizeof(char),1024);
+    if (!str) return NULL;
+
     pthread_mutex_unlock(&mutex);
     if (st->size>0){
-        str=(char*) calloc(sizeof(char),1024);
         strcpy(str,"OUTPUT: ");
         strcat(str,st->Stack_head->value);
+        pthread_mutex_unlock(&mutex);
         return str;
     }
-    else puts("ERROR: <there nothing in this stack [TOP]>");
+    strcpy(str,"ERROR: <there nothing in this stack [TOP]>");
     pthread_mutex_unlock(&mutex);
-    return NULL;
+    return str;
 }
 
 void printStack(Stack* st){
@@ -123,31 +127,32 @@ void * sendMSG(void *arg)
 {
     int newSocket = *((int *)arg);
     char txt[1024];
+    char buf[1024];
 
-    while(1){
-        strcpy(txt,"");
-        recv(newSocket , txt , 1024 , 0);
+    while(1) {
+        strcpy(txt, "");
+        strcpy(buf, "");
 
+        recv(newSocket, txt, 1024, 0);
 
-        if(strncmp(txt, "PUSH ", 5)==0){
-            remove_first_n_chars(txt,5);
-            push(st,txt );
-        }
-        else if(strncmp(txt, "POP", 3)==0){
+        if (strncmp(txt, "PUSH ", 5) == 0) {
+            remove_first_n_chars(txt, 5);
+            push(st, txt);
+        } else if (strncmp(txt, "POP", 3) == 0) {
             pop(st);
-        }
-        else if(strncmp(txt, "TOP", 3)==0){
-            char* s = top(st);
-            if(s) {
-                puts(s);
+        } else if (strncmp(txt, "TOP", 3) == 0) {
+            char *s = top(st);
+            if (s) {
+                strcpy(buf, s);
+                strcat(buf, "\n");
                 free(s);
             }
-        }
-        else if (strncmp(txt, "EXIT",4)==0) break;
-        else if (strncmp(txt, "PRINTS",6)==0) printStack(st);
+        } else if (strncmp(txt, "EXIT", 4) == 0) break;
+        else if (strncmp(txt, "prints", 6) == 0) printStack(st);
 
-        if (send(newSocket, "Hello, world!", 13, 0) == -1)
+        if (send(newSocket, buf, strlen(buf) + 1, 0) == -1)
             perror("send");
+
     }
     freeStack(st);
     close(newSocket);
