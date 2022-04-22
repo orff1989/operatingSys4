@@ -1,3 +1,0 @@
-/home/or/CLionProjects/operatingSys4/cmake-build-debug/CMakeFiles/operatingSys4.dir
-/home/or/CLionProjects/operatingSys4/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/or/CLionProjects/operatingSys4/cmake-build-debug/CMakeFiles/rebuild_cache.dir
