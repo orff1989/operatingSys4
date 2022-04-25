@@ -1,0 +1,5 @@
+# ninja log v5
+0	40	1650902913739245508	CMakeFiles/operatingSys4.dir/client.cpp.o	4271c372f4ad2886
+0	43	1650902913743245522	CMakeFiles/operatingSys4.dir/my_malloc.cpp.o	8a21a58431b1a603
+0	14	1650903531599520313	build.ninja	918064ad3615f137
+1	59	1650902913759245580	CMakeFiles/operatingSys4.dir/server.cpp.o	dc0783c7d49a800b

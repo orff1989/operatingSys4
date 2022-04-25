@@ -17,4 +17,4 @@ client.o: client.cpp
 .PHONY: clean all
 
 clean:
-	rm -f *.o *.a
+	rm -f *.o *.a *.out server client

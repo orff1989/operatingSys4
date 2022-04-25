@@ -7,16 +7,16 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include<pthread.h>
+#include <assert.h>
 #include <errno.h>
 #include <string.h>
 #include <sys/wait.h>
 #include <signal.h>
 
-
 // got some help from: https://dzone.com/articles/parallel-tcpip-socket-server-with-multi-threading
 
-#define PORT "3490"  // the port users will be connecting to
 #define BACKLOG 10   // how many pending connections queue will hold
+
 typedef struct node{
     char* value;
     struct node* next;
@@ -36,28 +36,6 @@ Stack* createStack(){
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 Stack* st = createStack();
-
-void sigchld_handler(int s)
-{
-    // waitpid() might overwrite errno, so we save and restore it:
-    int saved_errno = errno;
-
-    while(waitpid(-1, NULL, WNOHANG) > 0);
-
-    errno = saved_errno;
-}
-
-// get sockaddr, IPv4 or IPv6:
-void *get_in_addr(struct sockaddr *sa)
-{
-    if (sa->sa_family == AF_INET) {
-        return &(((struct sockaddr_in*)sa)->sin_addr);
-    }
-
-    return &(((struct sockaddr_in6*)sa)->sin6_addr);
-}
-
-
 
 void push(Stack* st, char* str){
     Node* n = (Node*) calloc(sizeof(Node),1);
@@ -123,6 +101,8 @@ void remove_first_n_chars(char* str, int n){
         str[k++]=str[i];
 }
 
+
+
 void * sendMSG(void *arg)
 {
     int newSoc = *((int *)arg);
@@ -160,20 +140,39 @@ void * sendMSG(void *arg)
     pthread_exit(NULL);
 }
 
-int main(){
+//void* my_malloc_(size_t size){
+//    void *the_pointer = sbrk(0);
+//    if(sbrk(size)==(void*)-1) return NULL;
+//    return the_pointer;
+//}
+//
+//void* my_calloc_(size_t size){
+//    void* ptr = my_malloc_(size);
+//    if(!ptr) return NULL;
+//    memset(ptr,0,size);
+//}
+//
+//void my_free_(void* ptr){
+//    if(ptr) {
+//        if (brk(ptr) != 0)
+//            perror("brk");
+//    }
+//}
+
+int server(){
     int sockfd, new_fd;
     struct sockaddr_in server_addr;
     struct sockaddr_storage their_addr;
     socklen_t sin_size;
     int i = 0;
-    int j=0, yes=1;
+    int j=0, one=1;
     pthread_t thread_arr[80];
 
     if((sockfd = socket(PF_INET, SOCK_STREAM, 0))==-1){
         perror("server: socket");
     }
 
-    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes,sizeof(int)) == -1) {
+    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(int)) == -1) {
         perror("setsockopt");
         exit(1);
     }
@@ -217,5 +216,43 @@ int main(){
             }
         }
     }
+}
+
+int Test(){
+    char *s;
+
+    assert(st!=NULL);
+    push(st,"a1");
+    push(st,"a2");
+    push(st,"a3");
+    s = top(st);
+    if (s) {
+        assert(strcmp(s,"a3"));
+        free(s);
+    }
+    pop(st);
+
+    s = top(st);
+    if (s) {
+        assert(strcmp(s,"a2"));
+        free(s);
+    }
+    pop(st);
+
+    s = top(st);
+    if (s) {
+        assert(strcmp(s,"a1"));
+        free(s);
+    }
+    pop(st);
+
+    puts("[The test was passed!]");
+    return(0);
+}
+
+int main(){
+    server();
+//    Test();
     return 0;
 }
+
